@@ -1,3 +1,4 @@
+import { runPreparationHook } from "./elemutil";
 import { createLoginForm } from "./loginform2";
 import { createTimeline } from "./timeline";
 
@@ -26,10 +27,12 @@ async function route(router: HTMLElement, hash: string) {
     case "login":
       clear(router);
       router.appendChild(createLoginForm());
+      runPreparationHook(router);
       break;
     case "following":
       clear(router);
-      router.appendChild(await createTimeline(router));
+      router.appendChild(createTimeline());
+      runPreparationHook(router);
       break;
     default:
       clear(router);
