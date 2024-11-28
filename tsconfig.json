@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM"],
+    "moduleResolution": "Bundler",
+    "isolatedModules": true
+  }
+}

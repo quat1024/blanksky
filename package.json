@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "esbuild": "0.24.0"
+  },
+  "dependencies": {
+    "@atproto/api": "^0.13.14",
+    "facon": "^2.0.3"
+  }
+}

@@ -1,0 +1,6 @@
+# yes this is embarassing but i hardcode my username and password
+# for testing, so i dont have to implement cookies / "remember me" yet
+/src/ignore/*
+
+/node_modules
+/dist
