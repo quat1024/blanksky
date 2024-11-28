@@ -1,6 +1,8 @@
 import AtpAgent from "@atproto/api";
 import { LoginEvent } from "./loginform";
-import { DullEvent, SimpleEvent } from "./eventutil";
+import { provide, ContextToken } from "./eventutil";
+
+export const AGENT: ContextToken<AtpAgent | undefined> = Symbol.for("blanksky-accountContext");
 
 export function createAccountContext(): HTMLElement {
   const loginContext = document.createElement("div");
@@ -8,9 +10,7 @@ export function createAccountContext(): HTMLElement {
   
   let agent: AtpAgent | undefined = undefined;
   
-  //getters... (ugly)
-  loginContext.addEventListener(GetAgentEvent.ID, e =>
-    (e as GetAgentEvent).payload(agent));
+  provide(loginContext, AGENT, () => agent);
   
   //login event
   loginContext.addEventListener(LoginEvent.ID, async ee => {
@@ -28,9 +28,9 @@ export function createAccountContext(): HTMLElement {
   return loginContext;
 }
 
-export class GetAgentEvent extends SimpleEvent<(agent: AtpAgent | undefined) => void> {
-  static ID: string = "blanksky-GetAgent";
-  constructor(setter: (agent: AtpAgent | undefined) => void) {
-    super(GetAgentEvent.ID, setter);
-  }
-}
+// export class GetAgentEvent2 extends ContextRequestEvent<AtpAgent | undefined> {
+//   static ID: string = "blanksky-GetAgent2";
+//   constructor(setter: Setter<AtpAgent | undefined>) {
+//     super(GetAgentEvent2.ID, setter);
+//   }
+// }

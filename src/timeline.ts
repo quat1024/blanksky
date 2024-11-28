@@ -1,10 +1,10 @@
 import AtpAgent from "@atproto/api";
 import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
-import { GetAgentEvent } from "./accountcontext";
+import { AGENT } from "./accountcontext";
+import { ask } from "./eventutil";
 
 export async function createTimeline(uhh: HTMLElement): Promise<HTMLElement> {
-  let agent: AtpAgent | undefined = undefined;
-  uhh.dispatchEvent(new GetAgentEvent(a => agent = a));
+  let agent: AtpAgent | undefined = ask(uhh, AGENT);
   
   if(!agent) {
     const lament = document.createElement("span");

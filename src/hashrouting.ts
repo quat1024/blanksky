@@ -1,4 +1,3 @@
-import { DullEvent } from "./eventutil";
 import { createLoginForm } from "./loginform2";
 import { createTimeline } from "./timeline";
 
@@ -38,10 +37,10 @@ async function route(router: HTMLElement, hash: string) {
   }
 }
 
-export class InitialRouteEvent extends DullEvent {
+export class InitialRouteEvent extends Event {
   static ID: string = "blanksky-initialroute";
   
   constructor() {
-    super(InitialRouteEvent.ID);
+    super(InitialRouteEvent.ID, {bubbles: true});
   }
 }

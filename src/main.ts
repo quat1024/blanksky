@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //need to kick the tires of the hashrouter (it only does "hashchange")
     hashrouter.dispatchEvent(new InitialRouteEvent());
   } else {
-    //it should pick up on this
+    //hashchange event should pick up on this
     window.location.hash = "/login";
   }
 });
