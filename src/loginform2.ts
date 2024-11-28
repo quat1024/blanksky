@@ -1,5 +1,7 @@
+import { LOGIN_HANDLER, LoginHandler } from "./accountcontext";
+import { setPreparationHook } from "./elemutil";
+import { ask } from "./eventutil";
 import { PASSWORD, USERNAME } from "./ignore/placeholder_auth_lmao";
-import { LoginEvent } from "./loginform";
 
 export function createLoginForm(): HTMLElement {
   const form = document.createElement("form");
@@ -8,37 +10,38 @@ export function createLoginForm(): HTMLElement {
   const identifierField = document.createElement("input");
   const passField = document.createElement("input");
   passField.type = "password";
-  const submit = document.createElement("button");
-  submit.textContent = "log in"
-  
+
   const throbber = document.createElement("output");
 
   form.append(
     pWrap(...label("service", "blanksky-login-service", serviceField)),
     pWrap(...label("identifier", "blanksky-login-identifier", identifierField)),
     pWrap(...label("password", "blanksky-login-pass", passField)),
-    pWrap(submit, throbber)
   );
-  
-  submit.addEventListener("click", e => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    //this is where i'd do some basic form validation, i think
-    
-    throbber.textContent = "working...";
-    form.dispatchEvent(new LoginEvent({
-      service: serviceField.value,
-      identifier: identifierField.value,
-      password: passField.value
-    }));
-    console.log("dispatchEvent finished");
-  });
-  
-  //FOR TESTING
-  serviceField.value = "https://bsky.social/"
+
+  //FOR TESTING LOL
+  serviceField.value = "https://bsky.social/";
   identifierField.value = USERNAME;
   passField.value = PASSWORD;
+
+  setPreparationHook(form, (_) => {
+    const loginHandler: LoginHandler = ask(form, LOGIN_HANDLER)!;
+    
+    const submit = document.createElement("button");
+    submit.textContent = "log in";
+
+    form.append(pWrap(submit, throbber));
+
+    submit.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      //this is where i'd do some basic form validation, i think
+
+      throbber.textContent = "working...";
+      loginHandler(serviceField.value, identifierField.value, passField.value);
+    });
+  });
 
   return form;
 }

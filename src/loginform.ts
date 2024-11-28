@@ -30,11 +30,11 @@ export class BlankskyLoginForm extends HTMLElement {
       
       //this is where i'd do some basic form validation, i think
       
-      this.dispatchEvent(new LoginEvent({
-        service: this.service.value,
-        identifier: this.identifier.value,
-        password: this.password.value
-      }));
+      // this.dispatchEvent(new LoginEvent({
+      //   service: this.service.value,
+      //   identifier: this.identifier.value,
+      //   password: this.password.value
+      // }));
       
       console.log("dispatchEvent finished");
     });
@@ -45,20 +45,3 @@ export class BlankskyLoginForm extends HTMLElement {
 }
 
 customElements.define("blanksky-loginform", BlankskyLoginForm);
-
-export type LoginArgs = {
-  service: string,
-  identifier: string,
-  password: string,
-}
-
-export class LoginEvent extends Event {
-  static ID: string = "blanksky-login";
-  
-  args: LoginArgs;
-  
-  constructor(args: LoginArgs) {
-    super(LoginEvent.ID, {bubbles: true, composed: true});
-    this.args = args;
-  }
-}

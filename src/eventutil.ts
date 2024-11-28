@@ -1,27 +1,33 @@
-export type ContextToken<_> = Symbol;
+export type Getter<T> = () => T;
+export type Setter<T> = (t: T) => void;
+export type ContextEvent<T> = { setter: Setter<T> } & Event;
+export type ContextType<T> = {
+  new (setter: Setter<T>): Event & ContextEvent<T>,
+  id: string
+}
 
-export function provide<T>(element: Element, kind: ContextToken<T>, getter: () => T) {
-  element.addEventListener("context-request", e => {
-    if(e instanceof ContextRequestEvent && e.kind == kind) {
-      (e as ContextRequestEvent<T>).setter(getter());
-      e.stopPropagation(); //found it
+export function makeContext<T>(id: string): ContextType<T> {
+  const className = id + "ContextEvent";
+  return {[className]: class extends Event implements ContextEvent<T> {
+    static id: string = id;
+    setter: Setter<T>;
+    constructor(setter: Setter<T>) {
+      super(id, {bubbles: true});
+      this.setter = setter;
     }
+  }}[className]; //What the fuck is javascript even
+}
+
+export function provide<T>(element: Element, event: ContextType<T>, getter: Getter<T>){
+  element.addEventListener(event.id, e => {
+    (e as ContextEvent<T>).setter(getter());
+    e.stopPropagation();
   });
 }
 
-export function ask<T>(elem: Element, kind: ContextToken<T>): T | undefined {
+export function ask<T>(element: Element, event: ContextType<T>): T | undefined {
   let result: T | undefined = undefined;
-  elem.dispatchEvent(new ContextRequestEvent<T>(kind, value => result = value)); //synchronous (!)
+  element.dispatchEvent(new event(value => result = value));
   return result;
 }
 
-class ContextRequestEvent<T> extends Event {
-  kind: ContextToken<T>;
-  setter: (t: T) => void;
-  
-  constructor(kind: ContextToken<T>, setter: (t: T) => void) {
-    super("context-request", {bubbles: true});
-    this.kind = kind;
-    this.setter = setter;
-  }
-}

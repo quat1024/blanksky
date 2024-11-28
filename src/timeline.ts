@@ -1,6 +1,6 @@
 import AtpAgent from "@atproto/api";
 import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
-import { AGENT } from "./accountcontext";
+import { CURRENT_AGENT } from "./accountcontext";
 import { ask } from "./eventutil";
 import { setPreparationHook } from "./elemutil";
 
@@ -11,7 +11,7 @@ export function createTimeline(): HTMLElement {
   timeline.innerText = "no preparation hook";
 
   setPreparationHook(timeline, async (_) => {
-    let agent: AtpAgent | undefined = ask(timeline, AGENT);
+    let agent: AtpAgent | undefined = ask(timeline, CURRENT_AGENT);
     if (!agent) {
       timeline.innerText = "no agent";
       return;

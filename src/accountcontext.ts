@@ -1,36 +1,26 @@
 import AtpAgent from "@atproto/api";
-import { LoginEvent } from "./loginform";
-import { provide, ContextToken } from "./eventutil";
+import { makeContext, ContextType, provide } from "./eventutil";
 
-export const AGENT: ContextToken<AtpAgent | undefined> = Symbol.for("blanksky-accountContext");
+export type LoginHandler = (service: string, identifier: string, password: string) => Promise<void>;
+
+export const CURRENT_AGENT: ContextType<AtpAgent | undefined> = makeContext("blanksky-accountContext");
+export const LOGIN_HANDLER: ContextType<LoginHandler> = makeContext("blanksky-doLogin");
 
 export function createAccountContext(): HTMLElement {
-  const loginContext = document.createElement("div");
-  loginContext.id = "blanksky-accountContext";
+  const accountContext = document.createElement("div");
+  accountContext.id = "blanksky-accountContext";
   
   let agent: AtpAgent | undefined = undefined;
   
-  provide(loginContext, AGENT, () => agent);
+  provide(accountContext, CURRENT_AGENT, () => agent);
   
-  //login event
-  loginContext.addEventListener(LoginEvent.ID, async ee => {
-    const e: LoginEvent = ee as LoginEvent;
+  provide(accountContext, LOGIN_HANDLER, () => async (service: string, identifier: string, password: string) => {
+    agent = new AtpAgent({service});
+    await agent.login({identifier, password});
     
-    const { service, identifier, password } = e.args;
-    console.log("got event on login form, ", service, identifier);
-    
-    agent = new AtpAgent({ service });
-    await agent.login({ identifier, password });
-    
+    //done logging in
     window.location.hash = "/following";
-  })
+  });
   
-  return loginContext;
+  return accountContext;
 }
-
-// export class GetAgentEvent2 extends ContextRequestEvent<AtpAgent | undefined> {
-//   static ID: string = "blanksky-GetAgent2";
-//   constructor(setter: Setter<AtpAgent | undefined>) {
-//     super(GetAgentEvent2.ID, setter);
-//   }
-// }
