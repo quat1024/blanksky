@@ -2,26 +2,21 @@ import AtpAgent from "@atproto/api";
 import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { CURRENT_AGENT } from "./accountcontext";
 import { ask } from "./eventutil";
-import { setPreparationHook } from "./elemutil";
 
-export function createTimeline(): HTMLElement {
-  const timeline = document.createElement("div");
-  timeline.id = "blanksky-timeline";
-
-  timeline.innerText = "no preparation hook";
-
-  setPreparationHook(timeline, async (_) => {
-    let agent: AtpAgent | undefined = ask(timeline, CURRENT_AGENT);
+export class BlankskyTimeline extends HTMLElement {
+  async connectedCallback() {
+    let agent: AtpAgent | undefined = ask(this, CURRENT_AGENT);
     if (!agent) {
-      timeline.innerText = "no agent";
+      this.innerText = "no agent";
       return;
     }
 
-    timeline.innerText = "loading timeline";
-    
+    this.innerText = "loading timeline";
+
     const result = await agent.getTimeline();
     console.log(result);
     if (!result.success) {
+      this.innerText = "failed loading timeline";
       throw new Error("not success");
     }
     const feed: FeedViewPost[] = result.data.feed;
@@ -41,9 +36,8 @@ export function createTimeline(): HTMLElement {
       list.appendChild(li);
     }
 
-    while(timeline.firstChild) timeline.firstChild.remove();
-    timeline.appendChild(list);
-  });
-
-  return timeline;
+    while (this.firstChild) this.firstChild.remove();
+    this.appendChild(list);
+  }
 }
+customElements.define("blanksky-timeline", BlankskyTimeline);

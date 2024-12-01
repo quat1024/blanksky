@@ -1,20 +1,20 @@
-import { createAccountContext } from "./accountcontext";
-import { createHashRouterAndBindEvents, InitialRouteEvent } from "./hashrouting";
+import { BlankskyAccountContext } from "./accountcontext";
+import { BlankskyHashRouter } from "./hashrouting";
 
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("blanksky")!;
 
   //account context
-  const accountContext = createAccountContext();
+  
+  const accountContext = new BlankskyAccountContext();
   container.appendChild(accountContext);
 
   //routing
-  const hashrouter = createHashRouterAndBindEvents();
+  const hashrouter = new BlankskyHashRouter();
   accountContext.appendChild(hashrouter);
   
   if(window.location.hash) {
-    //need to kick the tires of the hashrouter (it only does "hashchange")
-    hashrouter.dispatchEvent(new InitialRouteEvent());
+    hashrouter.route(window.location.hash);
   } else {
     //hashchange event should pick up on this
     window.location.hash = "/login";

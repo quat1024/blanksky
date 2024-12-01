@@ -1,49 +1,45 @@
-import { runPreparationHook } from "./elemutil";
-import { createLoginForm } from "./loginform2";
-import { createTimeline } from "./timeline";
+import { BlankskyLoginForm } from "./loginform";
+import { BlankskyTimeline } from "./timeline";
 
-export function createHashRouterAndBindEvents(): HTMLElement { //maybe split this
-  const hashRouter = document.createElement("div");
-  hashRouter.id = "blanksky-hashrouter";
-  
-  window.addEventListener("hashchange", _ => route(hashRouter, window.location.hash));
-  hashRouter.addEventListener(InitialRouteEvent.ID, _ => route(hashRouter, window.location.hash));
-
-  return hashRouter;
+function clear(elem: Element) {
+  while (elem.firstChild) elem.firstChild.remove();
 }
 
-function clear(elem: HTMLElement) {
-  while(elem.firstChild) elem.firstChild.remove();
-}
+export class BlankskyHashRouter extends HTMLElement {
+  #abort: AbortController = new AbortController();
 
-async function route(router: HTMLElement, hash: string) {
-  if(hash.startsWith("#/")) hash = hash.slice(2);
-  else if(hash.startsWith("#")) hash = hash.slice(1);
-  
-  console.log("routing to", hash);
-  
-  const split = hash.split("/");
-  switch(split[0]) {
-    case "login":
-      clear(router);
-      router.appendChild(createLoginForm());
-      runPreparationHook(router);
-      break;
-    case "following":
-      clear(router);
-      router.appendChild(createTimeline());
-      runPreparationHook(router);
-      break;
-    default:
-      clear(router);
-      router.textContent = "hashrouter 404... hash " + hash;
+  connectedCallback() {
+    window.addEventListener(
+      "hashchange",
+      (_) => this.route(window.location.hash),
+      { signal: this.#abort.signal },
+    );
+  }
+
+  disconnectedCallback() {
+    this.#abort.abort();
+  }
+
+  route(hash: string) {
+    if (hash.startsWith("#/")) hash = hash.slice(2);
+    else if (hash.startsWith("#")) hash = hash.slice(1);
+
+    console.log("routing to", hash);
+
+    const split = hash.split("/");
+    switch (split[0]) {
+      case "login":
+        clear(this);
+        this.appendChild(new BlankskyLoginForm());
+        break;
+      case "following":
+        clear(this);
+        this.appendChild(new BlankskyTimeline());
+        break;
+      default:
+        clear(this);
+        this.textContent = "hashrouter 404... hash " + hash;
+    }
   }
 }
-
-export class InitialRouteEvent extends Event {
-  static ID: string = "blanksky-initialroute";
-  
-  constructor() {
-    super(InitialRouteEvent.ID, {bubbles: true});
-  }
-}
+customElements.define("blanksky-hash-router", BlankskyHashRouter);
