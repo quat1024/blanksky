@@ -1,0 +1,48 @@
+blanksky-timeline {
+  display: flex;
+  flex-direction: column;
+  
+  width: min(95vw, 800px);
+  margin: 0 auto;
+}
+
+blanksky-timeline > *:not(:last-child) {
+  margin-bottom: 2em;
+}
+
+blanksky-toot {
+  display: flex;
+  flex-direction: column;
+  
+  border: 1px solid black;
+}
+
+blanksky-toot .avi-author-text {
+  display: flex;
+  flex-direction: row;
+}
+
+blanksky-toot .author-text {
+  display: flex;
+  flex-direction: column;
+}
+
+blanksky-toot .post-author {
+  font-weight: bold;
+}
+
+blanksky-toot .post-body {
+  white-space: pre-wrap;
+}
+
+blanksky-toot .interaction-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+blanksky-toot .interaction-button-placeholder {
+  width: 24px;
+  height: 24px;
+  background-color: black;
+}
