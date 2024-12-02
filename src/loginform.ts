@@ -1,6 +1,5 @@
 import { LOGIN_HANDLER, LoginHandler } from "./accountcontext";
 import { ask } from "./eventutil";
-import { PASSWORD, USERNAME } from "./ignore/placeholder_auth_lmao";
 
 function pWrap(...e: HTMLElement[]): HTMLElement {
   const p = document.createElement("p");
@@ -66,8 +65,6 @@ export class BlankskyLoginForm extends HTMLElement {
 
     //FOR TESTING LOL
     serviceField.value = "https://bsky.social/";
-    identifierField.value = USERNAME;
-    passField.value = PASSWORD;
   }
 }
 customElements.define("blanksky-loginform", BlankskyLoginForm);

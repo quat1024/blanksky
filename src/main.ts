@@ -1,11 +1,10 @@
 import { BlankskyAccountContext } from "./accountcontext";
 import { BlankskyHashRouter } from "./hashrouting";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const container = document.getElementById("blanksky")!;
 
   //account context
-  
   const accountContext = new BlankskyAccountContext();
   container.appendChild(accountContext);
 
@@ -13,10 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const hashrouter = new BlankskyHashRouter();
   accountContext.appendChild(hashrouter);
   
+  ////// get ready //////
+  await accountContext.tryResumeSession();
+  
   if(window.location.hash) {
-    hashrouter.route(window.location.hash);
+    hashrouter.route(window.location.hash); //go there
+  } else if(accountContext.isLoggedIn()) {
+    window.location.hash = "/following";
   } else {
-    //hashchange event should pick up on this
-    window.location.hash = "/login";
+    window.location.hash = "/login"
   }
 });

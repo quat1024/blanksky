@@ -1,11 +1,11 @@
-import AtpAgent from "@atproto/api";
+import { Agent } from "@atproto/api";
 import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { CURRENT_AGENT } from "./accountcontext";
 import { ask } from "./eventutil";
 
 export class BlankskyTimeline extends HTMLElement {
   async connectedCallback() {
-    let agent: AtpAgent | undefined = ask(this, CURRENT_AGENT);
+    let agent: Agent | undefined = ask(this, CURRENT_AGENT);
     if (!agent) {
       this.innerText = "no agent";
       return;
