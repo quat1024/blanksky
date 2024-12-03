@@ -1,8 +1,12 @@
+:root {
+  box-sizing: border-box;
+}
+
 blanksky-timeline {
   display: flex;
   flex-direction: column;
   
-  width: min(95vw, 800px);
+  width: min(90vw, 600px);
   margin: 0 auto;
 }
 
@@ -11,31 +15,48 @@ blanksky-timeline > *:not(:last-child) {
 }
 
 blanksky-toot {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-areas: ". snackbar"
+                       "avi author1"
+                       "avi author2"
+                       "body body"
+                       "interaction interaction";
+  grid-template-rows: min-content min-content min-content 1fr 24px;
+  grid-template-columns: 40px 1fr;
+  
+  padding: 3px;
+  gap: 3px;
   
   border: 1px solid black;
+  border-radius: 4px;
 }
 
-blanksky-toot .avi-author-text {
-  display: flex;
-  flex-direction: row;
+blanksky-toot > .snackbar {
+  grid-area: snackbar;
 }
 
-blanksky-toot .author-text {
-  display: flex;
-  flex-direction: column;
+blanksky-toot > blanksky-avatar {
+  grid-area: avi;
 }
 
-blanksky-toot .post-author {
+blanksky-toot > .author1 {
+  grid-area: author1;
   font-weight: bold;
 }
 
-blanksky-toot .post-body {
+blanksky-toot > .author2 {
+  grid-area: author2;
+  color: gray;
+}
+
+blanksky-toot > .body {
+  grid-area: body;
   white-space: pre-wrap;
 }
 
-blanksky-toot .interaction-buttons {
+blanksky-toot > .interaction {
+  grid-area: interaction;
+  
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -45,4 +66,25 @@ blanksky-toot .interaction-button-placeholder {
   width: 24px;
   height: 24px;
   background-color: black;
+}
+
+blanksky-avatar {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+}
+
+blanksky-avatar a {
+  text-decoration: none;
+}
+
+blanksky-avatar img, blanksky-avatar .no-img {
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  border-radius: 5px; /* sigh */
+}
+
+blanksky-avatar .no-img {
+  background-color: grey;
 }

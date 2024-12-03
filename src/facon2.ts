@@ -3,6 +3,7 @@
 //TODO TODO TODO: this is https://github.com/terkelg/facon but "instanceof HTMLElement" has been replaced with "instanceof Node"
 //this is because i'm getting DocumentFragments for some reason which isn't working
 //weird part is their tests aren't catching it, so maybe it's a JSDom difference?
+//OH they just never tested nesting facons..... hmm!
 
 export default function h(strings, ...args) {
   const template = document.createElement(`template`);
